@@ -9,9 +9,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'To-Do List',
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const TodoListScreen(),
     );
   }
@@ -25,12 +26,11 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-
   final List<String> _tasks = [];
   final TextEditingController _controller = TextEditingController();
 
-  void _addTask(){
-    if(_controller.text.isNotEmpty){
+  void _addTask() {
+    if (_controller.text.isNotEmpty) {
       setState(() {
         _tasks.add(_controller.text);
         _controller.clear();
@@ -38,44 +38,54 @@ class _TodoListScreenState extends State<TodoListScreen> {
     }
   }
 
-  void _removerTask(int index){
+  void _removeTask(int index) {
     setState(() {
-      _tasks.remove(index);
+      _tasks.removeAt(index);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TO do List'),
+        title: const Text('To-Do List'),
       ),
       body: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
                   child: TextField(
                     controller: _controller,
+                    decoration: const InputDecoration(
+                      labelText: 'Enter a task',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-              ),
-              TextButton(onPressed: _addTask, child: const Text('Add')),
-            ],
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: _addTask,
+                  child: const Text('Add'),
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: ListView.builder(
               itemCount: _tasks.length,
-              itemBuilder: (context,index){
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(_tasks[index]),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => _removerTask(index),
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  child: ListTile(
+                    title: Text(_tasks[index]),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _removeTask(index),
                     ),
-                  ],
+                  ),
                 );
               },
             ),
